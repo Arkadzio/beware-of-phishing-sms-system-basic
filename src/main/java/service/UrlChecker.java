@@ -1,11 +1,20 @@
 package service;
 
-public class UrlChecker {
-  private static final String API_URL = "https://web-risk-api-host.com/v1:evaluateUri";
-  private static final String API_KEY = "test-1234567890";
-  private URLCache urlCache;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.json.JSONObject;
 
-  public URLChecker(URLCache urlCache) {
+public class UrlChecker {
+
+//  private static final String API_URL = "https://web-risk-api-host.com/v1:evaluateUri";
+  private static final String API_URL = "https://nordvpn.com/pl/link-checker/";
+  private static final String API_KEY = "test-1234567890";
+  private final UrlCache urlCache;
+
+  public UrlChecker(UrlCache urlCache) {
     this.urlCache = urlCache;
   }
 
@@ -14,7 +23,6 @@ public class UrlChecker {
     if (cachedResult != null) {
       return !cachedResult;
     }
-
 
     JSONObject jsonRequest = new JSONObject();
     jsonRequest.put("uri", urlToCheck);
@@ -50,9 +58,11 @@ public class UrlChecker {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      urlCache.put(urlToCheck, false);
+      return true;
     }
 
-    urlCache.put(urlToCheck, true);
-    return false;
+    urlCache.put(urlToCheck, false);
+    return true;
   }
 }

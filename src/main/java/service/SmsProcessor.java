@@ -1,15 +1,21 @@
 package service;
 
-public class SmsProcessor {
-  private SubscriptionService subscriptionService;
-  private URLChecker urlChecker;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import model.SmsMessage;
 
-  public SMSProcessor(SubscriptionService subscriptionService, URLChecker urlChecker) {
+public class SmsProcessor {
+  private final SubscriptionService subscriptionService;
+  private final UrlChecker UrlChecker;
+
+  public SmsProcessor(SubscriptionService subscriptionService, UrlChecker UrlChecker) {
     this.subscriptionService = subscriptionService;
-    this.urlChecker = urlChecker;
+    this.UrlChecker = UrlChecker;
   }
 
-  public void processSms(SMSMessage sms) {
+  public void processSms(SmsMessage sms) {
     String message = sms.getMessage().trim();
 
     if (message.equalsIgnoreCase("START")) {
@@ -24,18 +30,18 @@ public class SmsProcessor {
       List<String> urls = extractUrls(message);
       boolean phishingFound = false;
       for (String url : urls) {
-        if (urlChecker.isPhishing(url)) {
+        if (UrlChecker.isPhishing(url)) {
           phishingFound = true;
-          System.out.println("Wiadomość zablokowana dla odbiorcy " + sms.getRecipient() +
-              " - wykryto phishingowy URL: " + url);
+          System.out.println("Message blocked for the recipient " + sms.getRecipient() +
+              " - link to phishing website found: " + url);
           break;
         }
       }
       if (!phishingFound) {
-        System.out.println("Wiadomość dostarczona do " + sms.getRecipient());
+        System.out.println("Message delivered to " + sms.getRecipient());
       }
     } else {
-      System.out.println("Wiadomość dostarczona (filtr nieaktywny) do " + sms.getRecipient());
+      System.out.println("!Phishing filter not active! Message delivered WITHOUT CHECKING to: " + sms.getRecipient());
     }
   }
 

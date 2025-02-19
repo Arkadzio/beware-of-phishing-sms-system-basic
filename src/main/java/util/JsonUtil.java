@@ -1,5 +1,6 @@
 package util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import model.SmsMessage;
 
