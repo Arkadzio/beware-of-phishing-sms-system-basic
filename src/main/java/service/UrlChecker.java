@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import org.json.JSONObject;
 
 public class UrlChecker {
@@ -36,7 +37,7 @@ public class UrlChecker {
       connection.setDoOutput(true);
 
       OutputStream os = connection.getOutputStream();
-      os.write(jsonRequest.toString().getBytes("UTF-8"));
+      os.write(jsonRequest.toString().getBytes(StandardCharsets.UTF_8));
       os.close();
 
       int responseCode = connection.getResponseCode();
